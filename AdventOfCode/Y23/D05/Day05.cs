@@ -16,7 +16,12 @@ public class Day05 : IPuzzle
 
     public long CalculatePartTwo(string[] lines)
     {
-        return -1;
+        IEnumerable<long> seeds = ParseSeedRanges(lines[0]);
+        List<List<string>> maps = ParseMaps(lines.Skip(2));
+
+        return seeds
+            .Select(seed => GetLocationNumber(seed, maps))
+            .Min();
     }
 
     private static List<long> ParseSeeds(string line)
@@ -25,6 +30,20 @@ public class Day05 : IPuzzle
             .Split(' ')
             .Select(long.Parse)
             .ToList();
+    }
+
+    public static IEnumerable<long> ParseSeedRanges(string line)
+    {
+        List<long> parts = ParseSeeds(line);
+
+        for (int i = 0; i < parts.Count; i += 2)
+        {
+            long rangeStart = parts[i];
+            long length = parts[i + 1];
+
+            for (int j = 0; j < length; j++)
+                yield return rangeStart + j;
+        }
     }
 
     private static List<List<string>> ParseMaps(IEnumerable<string> lines)

@@ -23,4 +23,17 @@ public class Day05Tests
         Day05.Map(100, map).Should().Be(100);
         Day05.Map(53, map).Should().Be(55);
     }
+
+    [Test]
+    public void ParseSeedRanges_Tests()
+    {
+        // Arrange
+        string line = "seeds: 79 14 55 13";
+
+        // Act
+        List<long> seeds = Day05.ParseSeedRanges(line).ToList();
+
+        // Assert
+        seeds.Should().HaveCount(27);
+    }
 }
