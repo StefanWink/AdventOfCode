@@ -2,7 +2,7 @@
 
 public interface IPuzzle
 {
-    int CalculatePartOne(string[] lines);
+    long CalculatePartOne(string[] lines);
 
     long CalculatePartTwo(string[] lines);
 }

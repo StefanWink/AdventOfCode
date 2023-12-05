@@ -1,9 +1,24 @@
-﻿namespace AdventOfCode.ConsoleApp;
+﻿using AdventOfCode.Y23.D05;
+using System.Diagnostics;
+
+namespace AdventOfCode.ConsoleApp;
 
 internal class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Hello, World!");
+        string path = "/temp/input.txt";
+        string[] lines = File.ReadAllLines(path);
+
+        IPuzzle puzzle = new Day05();
+
+        Stopwatch sw = Stopwatch.StartNew();
+
+        long partOne = puzzle.CalculatePartOne(lines);
+        Console.WriteLine($"[{sw.Elapsed}] Part one: {partOne}");
+        sw.Restart();
+
+        long partTwo = puzzle.CalculatePartTwo(lines);
+        Console.WriteLine($"[{sw.Elapsed}] Part two: {partTwo}");
     }
 }
