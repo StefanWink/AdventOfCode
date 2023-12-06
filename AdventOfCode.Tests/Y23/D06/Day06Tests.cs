@@ -22,7 +22,7 @@ public class Day06Tests
     [TestCase(7, 9, 4)]
     [TestCase(15, 40, 8)]
     [TestCase(30, 200, 9)]
-    public void Ways_to_win(int time, int distance, int expected)
+    public void Ways_to_win(long time, long distance, int expected)
     {
         Day06.WaysToWin(time, distance).Should().Be(expected);
     }

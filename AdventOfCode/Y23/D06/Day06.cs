@@ -9,7 +9,19 @@ public class Day06 : IPuzzle
 
     public long CalculatePartTwo(string[] lines)
     {
-        return -1;
+        long time = ParseAsOneNumber(lines[0]);
+        long distance = ParseAsOneNumber(lines[1]);
+
+        return WaysToWin(time, distance);
+    }
+
+    private static long ParseAsOneNumber(string line)
+    {
+        char[] digits = line
+            .Where(char.IsDigit)
+            .ToArray();
+
+        return long.Parse(digits);
     }
 
     public int TotalWaysToWin(string[] lines)
@@ -26,38 +38,38 @@ public class Day06 : IPuzzle
 
     private static IEnumerable<Race> ParseRaces(string[] lines)
     {
-        int[] times = ParseLine(lines[0]).ToArray();
-        int[] distances = ParseLine(lines[1]).ToArray();
+        long[] times = ParseLine(lines[0]).ToArray();
+        long[] distances = ParseLine(lines[1]).ToArray();
 
         for (int i = 0; i < times.Length; i++)
             yield return new(times[i], distances[i]);
     }
 
-    private static IEnumerable<int> ParseLine(string line)
+    private static IEnumerable<long> ParseLine(string line)
     {
         int index = line.IndexOf(':') + 1;
 
         return line
             .Substring(index)
             .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .Select(int.Parse);
+            .Select(long.Parse);
     }
 
-    public static int WaysToWin(int time, int distance)
+    public static int WaysToWin(long time, long distance)
     {
         int waysToWin = 0;
 
-        for (int i = 0; i <= time; i++)
+        for (long i = 0; i <= time; i++)
             if (CalculateDistance(i, time) > distance)
                 waysToWin++;
 
         return waysToWin;
     }
 
-    public static int CalculateDistance(int timeButtonPressed, int raceDuration)
+    public static long CalculateDistance(long timeButtonPressed, long raceDuration)
     {
-        int speed = timeButtonPressed;
-        int duration = raceDuration - timeButtonPressed;
+        long speed = timeButtonPressed;
+        long duration = raceDuration - timeButtonPressed;
 
         return speed * duration;
     }
