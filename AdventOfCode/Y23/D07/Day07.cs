@@ -4,18 +4,18 @@ public class Day07 : IPuzzle
 {
     public long CalculatePartOne(string[] lines)
     {
-        return CalculateTotalWinnings(ParseHandBids(lines));
+        return CalculateTotalWinnings(ParseHandBids(lines), new HandComparer());
     }
 
     public long CalculatePartTwo(string[] lines)
     {
-        return -1;
+        return CalculateTotalWinnings(ParseHandBids(lines), new JokerHandComparer());
     }
 
-    public static long CalculateTotalWinnings(IEnumerable<HandBid> handBids)
+    public static long CalculateTotalWinnings(IEnumerable<HandBid> handBids, IComparer<Hand> handComparer)
     {
         return handBids
-            .OrderBy(x => x.Hand, new HandComparer())
+            .OrderBy(x => x.Hand, handComparer)
             .Select((handBid, index) => handBid.Bid * (index + 1))
             .Sum();
     }

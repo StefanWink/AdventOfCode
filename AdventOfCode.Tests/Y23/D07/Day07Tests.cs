@@ -8,6 +8,7 @@ public class Day07Tests
 {
     private readonly CardComparer cardComparer = new();
     private readonly HandComparer handComparer = new();
+    private readonly JokerHandComparer jokerHandComparer = new();
 
     [TestCase('A', 'K')]
     [TestCase('K', 'Q')]
@@ -93,9 +94,29 @@ public class Day07Tests
         };
 
         // Act
-        long result = Day07.CalculateTotalWinnings(handBids);
+        long result = Day07.CalculateTotalWinnings(handBids, handComparer);
 
         // Assert
         result.Should().Be(6440);
+    }
+
+    [Test]
+    public void Calculate_total_winnings_example_joker()
+    {
+        // Arrange
+        HandBid[] handBids = new[]
+        {
+            new HandBid(Day07.ParseHand("32T3K"), 765),
+            new HandBid(Day07.ParseHand("T55J5"), 684),
+            new HandBid(Day07.ParseHand("KK677"), 28),
+            new HandBid(Day07.ParseHand("KTJJT"), 220),
+            new HandBid(Day07.ParseHand("QQQJA"), 483),
+        };
+
+        // Act
+        long result = Day07.CalculateTotalWinnings(handBids, jokerHandComparer);
+
+        // Assert
+        result.Should().Be(5905);
     }
 }
