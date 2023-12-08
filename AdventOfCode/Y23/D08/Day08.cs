@@ -11,6 +11,8 @@ public class Day08 : IPuzzle
 
     public long CalculatePartTwo(string[] lines)
     {
-        return -1;
+        Map map = MapParser.Parse(lines);
+
+        return map.GetGhostStepCount();
     }
 }
