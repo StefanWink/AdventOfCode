@@ -4,14 +4,10 @@ public class Image
 {
     private readonly string input;
     private readonly char[][] map;
+    private readonly HashSet<int> expandedRows;
+    private readonly HashSet<int> expandedColumns;
 
     public Galaxy[] Galaxies { get; }
-
-    private IEnumerable<string> GetLines()
-    {
-        foreach (char[] row in map)
-            yield return new string(row);
-    }
 
     public Image(string input)
         : this(input.Split(Environment.NewLine))
@@ -29,50 +25,47 @@ public class Image
             map[i] = line.ToCharArray();
         }
 
-        Galaxies = GetGalaxies().ToArray();
-    }
+        expandedRows = Enumerable.Range(0, map.Length)
+            .Where(IsRowEmpty)
+            .ToHashSet();
 
-    public Image GetExpandedImage()
-    {
-        List<string> expandedLines = new();
-
-        foreach (string line in GetLines())
-        {
-            expandedLines.Add(line);
-
-            if (line.All(c => c == '.'))
-                expandedLines.Add(line);
-        }
-
-        int columns = map[0].Length;
-
-        HashSet<int> columnsToExpand = Enumerable.Range(0, columns)
+        expandedColumns = Enumerable.Range(0, map[0].Length)
             .Where(IsColumnEmpty)
             .ToHashSet();
 
-        string[] lines = expandedLines
-            .Select(line => ExpandLine(line, columnsToExpand).ToArray())
-            .Select(chars => new string(chars))
-            .ToArray();
-
-        return new(lines);
+        Galaxies = GetGalaxies().ToArray();
     }
 
-    public int CalculateDistance(int galaxy1, int galaxy2)
+    public int CalculateDistance(int galaxy1, int galaxy2, int expansionRate)
     {
-        return CalculateDistance(Galaxies[galaxy1], Galaxies[galaxy2]);
+        return CalculateDistance(Galaxies[galaxy1], Galaxies[galaxy2], expansionRate);
     }
 
-    public static int CalculateDistance(Galaxy galaxy1, Galaxy galaxy2)
+    public int CalculateDistance(Galaxy galaxy1, Galaxy galaxy2, int expansionRate)
     {
-        return Math.Abs(galaxy1.Row - galaxy2.Row)
-            + Math.Abs(galaxy1.Column - galaxy2.Column);
+        int[] rowSpan = new[] { galaxy1.Row, galaxy2.Row }.OrderBy(x => x).ToArray();
+        int[] colSpan = new[] { galaxy1.Column, galaxy2.Column }.OrderBy(x => x).ToArray();
+
+        int diffRows = rowSpan[1] - rowSpan[0];
+        int diffCols = colSpan[1] - colSpan[0];
+
+        int result = diffRows + diffCols;
+
+        for (int i = rowSpan[0]; i < rowSpan[1]; i++)
+            if (expandedRows.Contains(i))
+                result += (expansionRate - 1);
+
+        for (int i = colSpan[0]; i < colSpan[1]; i++)
+            if (expandedColumns.Contains(i))
+                result += (expansionRate - 1);
+
+        return result;
     }
 
-    public int CalculateShortestPath()
+    public long CalculateShortestPath(int expansionRate)
     {
         return Day11.GetPairs(Galaxies.Length)
-            .Select(pair => CalculateDistance(pair.Item1, pair.Item2))
+            .Select(pair => (long)CalculateDistance(pair.Item1, pair.Item2, expansionRate))
             .Sum();
     }
 
@@ -93,15 +86,9 @@ public class Image
         return true;
     }
 
-    private static IEnumerable<char> ExpandLine(string line, ISet<int> indexes)
+    private bool IsRowEmpty(int index)
     {
-        for (int i = 0; i < line.Length; i++)
-        {
-            yield return line[i];
-
-            if (indexes.Contains(i))
-                yield return line[i];
-        }
+        return map[index].All(c => c == '.');
     }
 
     public override string ToString()

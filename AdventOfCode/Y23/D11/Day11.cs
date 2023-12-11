@@ -5,13 +5,13 @@ public class Day11 : IPuzzle
     public long CalculatePartOne(string[] lines)
     {
         Image image = new(lines);
-        Image expandedImage = image.GetExpandedImage();
-        return expandedImage.CalculateShortestPath();
+        return image.CalculateShortestPath(2);
     }
 
     public long CalculatePartTwo(string[] lines)
     {
-        return -1;
+        Image image = new(lines);
+        return image.CalculateShortestPath(1000000);
     }
 
     public static IEnumerable<Pair> GetPairs(int number)
