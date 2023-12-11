@@ -1,4 +1,4 @@
-﻿using AdventOfCode.Y23.D08;
+﻿using AdventOfCode.Y23.D11;
 using System.Diagnostics;
 
 namespace AdventOfCode.ConsoleApp;
@@ -10,7 +10,7 @@ internal class Program
         string path = "/temp/input.txt";
         string[] lines = File.ReadAllLines(path);
 
-        IPuzzle puzzle = new Day08();
+        IPuzzle puzzle = new Day11();
 
         Stopwatch sw = Stopwatch.StartNew();
 
