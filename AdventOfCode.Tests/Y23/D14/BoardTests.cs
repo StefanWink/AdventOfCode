@@ -95,7 +95,7 @@ public class BoardTests
         Board board = new(input);
 
         // Act
-        board.TiltNorth();
+        board.TiltNorthSouth(Direction.North);
 
         // Assert
         board.IsRock(0, 0).Should().BeTrue();
@@ -106,6 +106,62 @@ public class BoardTests
     }
 
     [Test]
+    public void Tilt_south_tests()
+    {
+        // Arrange
+        Board board = new(input);
+
+        // Act
+        board.TiltNorthSouth(Direction.South);
+
+        // Assert
+        board.IsRock(7, 0).Should().BeTrue();
+        board.IsRock(7, 1).Should().BeTrue();
+        board.IsRock(8, 1).Should().BeTrue();
+        board.IsRock(9, 1).Should().BeTrue();
+    }
+
+    [Test]
+    public void Tilt_west_tests()
+    {
+        // Arrange
+        Board board = new(input);
+
+        // Act
+        board.TiltWestEast(Direction.West);
+
+        // Assert
+        board.IsRock(0, 0).Should().BeTrue();
+        board.IsRock(0, 1).Should().BeFalse();
+        
+        board.IsRock(1, 0).Should().BeTrue();
+        board.IsRock(1, 1).Should().BeTrue();
+        board.IsRock(1, 2).Should().BeTrue();
+        board.IsRock(1, 3).Should().BeFalse();
+
+        board.IsRock(2, 0).Should().BeFalse();
+    }
+
+    [Test]
+    public void Tilt_east_tests()
+    {
+        // Arrange
+        Board board = new(input);
+
+        // Act
+        board.TiltWestEast(Direction.East);
+
+        // Assert
+        board.IsRock(0, 0).Should().BeFalse();
+        board.IsRock(0, 4).Should().BeTrue();
+
+        board.IsRock(1, 0).Should().BeFalse();
+        board.IsRock(1, 1).Should().BeTrue();
+        board.IsRock(1, 2).Should().BeTrue();
+        board.IsRock(1, 3).Should().BeTrue();
+    }
+
+    [Test]
     public void Get_load_on_north()
     {
         // Arrange
@@ -113,5 +169,22 @@ public class BoardTests
 
         // Act & Assert
         board.GetLoadOnNorth(new Rock(0, 0)).Should().Be(10);
+    }
+
+    [Test]
+    public void Cycle()
+    {
+        // Arrange
+        Board board = new(input);
+
+        // Act
+        board.Cycle();
+
+        // Assert
+        board.IsRock(1, 8).Should().BeTrue();
+        board.IsRock(2, 3).Should().BeTrue();
+        board.IsRock(2, 4).Should().BeTrue();
+        board.IsRock(3, 1).Should().BeTrue();
+        board.IsRock(3, 2).Should().BeTrue();
     }
 }
