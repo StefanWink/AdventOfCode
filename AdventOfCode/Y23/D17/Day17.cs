@@ -12,6 +12,9 @@ public class Day17 : IPuzzle
 
     public long CalculatePartTwo(string[] lines)
     {
-        return -1;
+        Map map = new(lines);
+        ShortestPathPartTwo shortestPath = new(map);
+
+        return shortestPath.GetShortestPath();
     }
 }

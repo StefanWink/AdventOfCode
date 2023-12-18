@@ -43,4 +43,12 @@ public class Map
         if (cityBlock.ZeroBasedRow + 1 < Size)
             yield return cityBlock.Down();
     }
+
+    public bool IsInBounds(CityBlock cityBlock)
+    {
+        return cityBlock.ZeroBasedColumn >= 0
+            && cityBlock.ZeroBasedColumn < Size
+            && cityBlock.ZeroBasedRow >= 0
+            && cityBlock.ZeroBasedRow < Size;
+    }
 }

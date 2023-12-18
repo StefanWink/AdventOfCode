@@ -22,6 +22,18 @@ public readonly record struct CityBlock(int ZeroBasedRow, int ZeroBasedColumn)
         return new(ZeroBasedRow, ZeroBasedColumn + 1);
     }
 
+    public CityBlock Straight(Direction direction)
+    {
+        return direction switch
+        {
+            Direction.Up => Up(),
+            Direction.Right => Right(),
+            Direction.Down => Down(),
+            Direction.Left => Left(),
+            _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, "Unknown dirction.")
+        };
+    }
+
     public Direction DetermineDirectionTo(CityBlock to)
     {
         if (ZeroBasedRow == to.ZeroBasedRow)
