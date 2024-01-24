@@ -11,8 +11,10 @@ fn main() {
 }
 
 fn calculate_part_one(path: &str) -> u32 {
-    let sum_calibration_values: u32 = read_to_string(path).unwrap()
-        .lines().into_iter()
+    let sum_calibration_values: u32 = read_to_string(path)
+        .unwrap()
+        .lines()
+        .into_iter()
         .map(|line| get_calibration_value(line))
         .sum();
 
@@ -22,8 +24,10 @@ fn calculate_part_one(path: &str) -> u32 {
 fn calculate_part_two(path: &str) -> u32 {
     let numbers = get_numbers();
 
-    let sum_calibration_values: u32 = read_to_string(path).unwrap()
-        .lines().into_iter()
+    let sum_calibration_values: u32 = read_to_string(path)
+        .unwrap()
+        .lines()
+        .into_iter()
         .map(|line| replace_numbers(line, &numbers))
         .map(|line| get_calibration_value(&line))
         .sum();
@@ -32,7 +36,8 @@ fn calculate_part_two(path: &str) -> u32 {
 }
 
 fn get_calibration_value(input: &str) -> u32 {
-    let chars: Vec<char> = input.chars()
+    let chars: Vec<char> = input
+        .chars()
         .into_iter()
         .filter(|c| c.is_numeric())
         .collect();
@@ -65,62 +70,62 @@ calibration_value_tests! {
 struct Number {
     text_length: usize,
     number_text: String,
-    number_value: char
+    number_value: char,
 }
 
 fn get_numbers() -> Vec<Number> {
     let one = Number {
         number_text: String::from("one"),
         text_length: 3,
-        number_value: '1'
+        number_value: '1',
     };
 
     let two = Number {
         number_text: String::from("two"),
         text_length: 3,
-        number_value: '2'
+        number_value: '2',
     };
 
     let three = Number {
         number_text: String::from("three"),
         text_length: 5,
-        number_value: '3'
+        number_value: '3',
     };
 
     let four = Number {
         number_text: String::from("four"),
         text_length: 4,
-        number_value: '4'
+        number_value: '4',
     };
 
     let five = Number {
         number_text: String::from("five"),
         text_length: 4,
-        number_value: '5'
+        number_value: '5',
     };
 
     let six = Number {
         number_text: String::from("six"),
         text_length: 3,
-        number_value: '6'
+        number_value: '6',
     };
 
     let seven = Number {
         number_text: String::from("seven"),
         text_length: 5,
-        number_value: '7'
+        number_value: '7',
     };
 
     let eight = Number {
         number_text: String::from("eight"),
         text_length: 5,
-        number_value: '8'
+        number_value: '8',
     };
 
     let nine = Number {
         number_text: String::from("nine"),
         text_length: 4,
-        number_value: '9'
+        number_value: '9',
     };
 
     let numbers = vec![one, two, three, four, five, six, seven, eight, nine];

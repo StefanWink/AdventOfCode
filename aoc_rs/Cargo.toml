@@ -2,3 +2,11 @@
 name = "aoc_rs"
 version = "0.1.0"
 edition = "2021"
+
+[[bin]]
+name = "y23d01"
+path = "src/y23/d01/main.rs"
+
+[[bin]]
+name = "y23d02"
+path = "src/y23/d02/main.rs"
