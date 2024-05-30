@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <Compile Include="Y23\D02\Day02.fs" />
+    <Compile Include="Y23\D03\Day03.fs" />
   </ItemGroup>
 
 </Project>
