@@ -8,10 +8,11 @@ module Day03 =
 
     type Digit = { Digit: int; Position: Position }
     type Period = { Period: Position }
-    type Symbol = { Symbol: Position }
+    type Symbol = { Symbol: char; Position: Position }
+    type Star = Star of Symbol
 
     type Number = { Value: int; Positions: Position array }
-    type PartNumber = PartNumber of int
+    type PartNumber = PartNumber of Number
 
     type EngineSchematic =
         {
@@ -23,7 +24,6 @@ module Day03 =
         | EntryNumber of Digit
         | EntrySymbol of Symbol
         | EntryPeriod of Period
-
     let parseDigit(c: char) : int =
         c - '0'
         |> int
@@ -32,7 +32,7 @@ module Day03 =
         match c with
         | d when System.Char.IsDigit d -> EntryNumber { Digit = parseDigit d; Position = position }
         | '.' -> EntryPeriod { Period = position }
-        | _ -> EntrySymbol { Symbol = position }
+        | _ -> EntrySymbol { Symbol = c; Position = position }
 
     let getDigit(entry: Entry) : option<Digit> =
         match entry with
@@ -42,6 +42,11 @@ module Day03 =
     let getSymbol(entry: Entry) : option<Symbol> =
         match entry with
         | EntrySymbol s -> Some s
+        | _ -> None
+
+    let getStar(symbol: Symbol) : option<Star> =
+        match symbol with
+        | s when s.Symbol = '*' -> Some (Star s)
         | _ -> None
 
     let parseLine(line: string, row: int) : EngineSchematic =
@@ -117,11 +122,11 @@ module Day03 =
             |> Array.exists (fun pos ->
                 puzzle.Symbols
                 |> Array.exists (fun sym ->
-                    isAdjacent(pos, sym.Symbol)
+                    isAdjacent(pos, sym.Position)
                 )
             )
         )
-        |> Array.map (fun number -> PartNumber number.Value)
+        |> Array.map (fun number -> PartNumber number)
 
     let parsePuzzle(lines: string array) : EngineSchematic =
         let emptySchematic =
@@ -137,9 +142,8 @@ module Day03 =
             Symbols = Array.concat [x.Symbols; y.Symbols]
         }) emptySchematic
 
-    // Decontruct
-    let getPartNumberValue(PartNumber partNumberValue) : int =
-        partNumberValue
+    let getPartNumberValue(PartNumber partNumber) : int =
+        partNumber.Value
 
     let calculatePartOne(lines: string array) : int =
         lines
@@ -147,5 +151,52 @@ module Day03 =
         |> findPartNumbers
         |> Array.sumBy getPartNumberValue
 
+    type GearRatio = { PartNumber1: PartNumber; PartNumber2: PartNumber }
+
+    let findAdjacentPartNumbers(star: Star, partNumbers: PartNumber array) : PartNumber array =
+        let (Star starSymbol) = star
+        let starPosition = starSymbol.Position
+
+        partNumbers
+        |> Array.filter (fun partNumber ->
+            let (PartNumber number) = partNumber
+
+            number.Positions
+            |> Array.exists (fun position ->
+                isAdjacent(position, starPosition)
+            )
+        )
+
+    let findGearRatios(partNumbers: PartNumber array, stars: Star array) : GearRatio array =
+        stars
+        |> Array.choose (fun star ->
+            match findAdjacentPartNumbers(star, partNumbers) with
+            | adjacentPartNumbers when adjacentPartNumbers.Length = 2 ->
+                Some
+                    {
+                        PartNumber1 = adjacentPartNumbers[0]
+                        PartNumber2 = adjacentPartNumbers[1]
+                    }
+            | _ -> None
+        )
+
+    let getGearRatioValue(gearRatio: GearRatio) : int =
+        let value1 = gearRatio.PartNumber1 |> getPartNumberValue
+        let value2 = gearRatio.PartNumber2 |> getPartNumberValue
+        value1 * value2
+
     let calculatePartTwo(lines: string array) : int =
-        failwith "todo"
+        let puzzle =
+            lines
+            |> parsePuzzle
+
+        let partNumbers =
+            puzzle
+            |> findPartNumbers
+
+        let stars =
+            puzzle.Symbols
+            |> Array.choose getStar
+
+        findGearRatios(partNumbers, stars)
+        |> Array.sumBy getGearRatioValue
