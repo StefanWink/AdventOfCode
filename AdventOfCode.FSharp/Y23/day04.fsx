@@ -1,7 +1,8 @@
 open System
 
 type Card =
-    { WinningNumbers: int array
+    { Id: int
+      WinningNumbers: int array
       Numbers: int array }
 
 let stringSplitOptions =
@@ -11,6 +12,8 @@ let stringSplitOptions =
 let parseCard (line: string) : Card =
     let colon = line.IndexOf(':')
     let pipe = line.IndexOf('|')
+
+    let id = line.Substring(4, colon - 4).Trim() |> int
 
     let winningNumbers =
         line
@@ -25,7 +28,8 @@ let parseCard (line: string) : Card =
         |> Array.map Int32.Parse
 
     let card =
-        { WinningNumbers = winningNumbers
+        { Id = id
+          WinningNumbers = winningNumbers
           Numbers = numbers }
 
     card
@@ -50,7 +54,34 @@ let calculatePartOne (lines: string array) : int =
     |> Array.map parseCard
     |> Array.sumBy calculatePoints
 
-let calculatePartTwo (lines: string array) : int64 = failwith "todo"
+let calculateMatchingNumbersCount (card: Card) : int =
+    let matchingNumbers =
+        card.Numbers
+        |> Array.filter (fun number -> Array.contains number card.WinningNumbers)
+
+    matchingNumbers.Length
+
+let calculatePartTwo (lines: string array) : int =
+    // Index = card ID
+    let mutable copies = Array.zeroCreate (lines.Length + 1)
+
+    let cards = lines |> Array.map parseCard
+
+    for card in cards do
+        let count = calculateMatchingNumbersCount card
+
+        printfn $"Card {card.Id} has {count} matching numbers"
+
+        let winsCopies = 1 + copies[card.Id]
+
+        for i in 1..count do
+            let index = card.Id + i
+
+            if index <= lines.Length then
+                printfn $"  and wins {winsCopies} copies of Card {index}"
+                copies[index] <- copies[index] + winsCopies
+
+    cards.Length + (copies |> Array.sum)
 
 let userFolder =
     System.Environment.SpecialFolder.UserProfile
